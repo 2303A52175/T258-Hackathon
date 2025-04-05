@@ -1,0 +1,80 @@
+T258
+
+Code:
+
+import java.util.*;
+class User {
+    String username;
+    List<Activity> activities;
+    User(String username) {
+        this.username = username;
+        this.activities = new ArrayList<>();
+    }
+    void logActivity(Activity activity) {
+        activities.add(activity);
+    }
+    int getTotalCalories() {
+        return activities.stream().mapToInt(a -> a.caloriesBurned).sum();
+    }
+    void viewActivities() {
+        if (activities.isEmpty()) {
+            System.out.println("No activities logged.");
+        } else {
+            for (Activity act : activities) {
+                System.out.println(act);
+            }
+        }
+    }
+}
+class Activity {
+    String name;
+    int duration;
+    int caloriesBurned;
+    Activity(String name, int duration, int caloriesBurned) {
+        this.name = name;
+        this.duration = duration;
+        this.caloriesBurned = caloriesBurned;
+    }
+    @Override
+    public String toString() {
+        return name + " | Duration: " + duration + " mins | Calories: " + caloriesBurned;
+    }
+}
+public class Main {
+    static Map<String, User> users = new HashMap<>();
+    static Scanner scanner = new Scanner(System.in);
+    public static void main(String[] args) {
+        int choice;
+        System.out.print("Enter your username: ");
+        String username = scanner.nextLine();
+        User currentUser = users.computeIfAbsent(username, User::new);
+        do {
+            System.out.println("\n--- Student Fitness System ---");
+            System.out.println("1. Log Activity");
+            System.out.println("2. View My Activities");
+            System.out.println("3. View Total Calories Burned");
+            System.out.println("4. Exit");
+            System.out.print("Choice: ");
+            choice = scanner.nextInt();
+            scanner.nextLine();
+            switch (choice) {
+                case 1 -> logActivity(currentUser);
+                case 2 -> currentUser.viewActivities();
+                case 3 -> System.out.println("Total Calories Burned: " + currentUser.getTotalCalories());
+                case 4 -> System.out.println("Stay active! Goodbye.");
+                default -> System.out.println("Invalid choice.");
+            }
+        } while (choice != 4);
+    }
+    static void logActivity(User user) {
+        System.out.print("Enter activity name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter duration (minutes): ");
+        int duration = scanner.nextInt();
+        System.out.print("Enter calories burned: ");
+        int calories = scanner.nextInt();
+        scanner.nextLine(); 
+        user.logActivity(new Activity(name, duration, calories));
+        System.out.println("Activity logged successfully!");
+    }
+}
